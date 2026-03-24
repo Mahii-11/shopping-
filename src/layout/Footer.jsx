@@ -1,63 +1,93 @@
-import { Link } from "react-router";
+import { FaFacebookF, FaLinkedinIn, FaYoutube, FaInstagram } from "react-icons/fa";
+import { HiOutlineLocationMarker, HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground text-background pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-
-          <div className="md:col-span-2">
-            <h2 className="font-serif text-3xl tracking-widest mb-6">SAVIOR</h2>
-            <p className="text-background/60 font-sans text-sm max-w-md leading-relaxed mb-6">
-              Elevating everyday style with premium fabrics and modern cuts.
-            </p>
-
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center">
-                f
-              </div>
-              <div className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center">
-                i
-              </div>
-            </div>
+    <footer className="w-full">
+      
+      {/* Top Section */}
+      <div className="bg-[#f1f1f1] px-6 md:px-20 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 items-start">
+          
+          {/* Logo */}
+          <div>
+            <h1 className="text-3xl font-bold tracking-widest">
+              SAVIOR
+            </h1>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h3 className="font-sans font-bold text-sm tracking-wider uppercase mb-6">
-              Shop
-            </h3>
-            <ul className="space-y-4 text-sm text-background/60">
-              <li><Link to="/category/c-shirt">Shirts</Link></li>
-              <li><Link to="/category/c-punjabi">Punjabi</Link></li>
-              <li><Link to="/category/c-pants">Pants</Link></li>
-              <li><Link to="/category/c-sale">Sale</Link></li>
+            <h3 className="font-semibold text-lg mb-4">QUICK LINKS</h3>
+            <ul className="space-y-3 text-gray-600">
+              <li className="hover:text-black cursor-pointer">About Us</li>
+              <li className="hover:text-black cursor-pointer">Privacy Policy</li>
+              <li className="hover:text-black cursor-pointer">Terms And Conditions</li>
+              <li className="hover:text-black cursor-pointer">Return And Cancellation Policy</li>
             </ul>
           </div>
 
+          {/* Contact */}
           <div>
-            <h3 className="font-sans font-bold text-sm tracking-wider uppercase mb-6">
-              Newsletter
-            </h3>
-            <form className="flex border-b border-background/30 pb-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-transparent border-none outline-none text-sm w-full text-background"
-              />
-              <button type="submit" className="text-xs uppercase ml-2">
-                Subscribe
-              </button>
-            </form>
+            <h3 className="font-semibold text-lg mb-4">CONTACT US</h3>
+            <ul className="space-y-4 text-gray-700">
+              
+              <li className="flex items-center gap-3">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <HiOutlineLocationMarker className="text-xl" />
+                </div>
+                <span>Dhaka, Bangladesh</span>
+              </li>
+
+              <li className="flex items-center gap-3">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <HiOutlinePhone className="text-xl" />
+                </div>
+                <span>01710088496</span>
+              </li>
+
+              <li className="flex items-center gap-3">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <HiOutlineMail className="text-xl" />
+                </div>
+                <span>saviorlifestyle@gmail.com</span>
+              </li>
+
+            </ul>
+          </div>
+
+          {/* Follow Us */}
+          <div>
+            <h3 className="font-semibold text-lg mb-4">FOLLOW US</h3>
+            <div className="flex gap-4">
+              
+              <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full cursor-pointer">
+                <FaFacebookF />
+              </div>
+
+              <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full cursor-pointer">
+                <FaLinkedinIn />
+              </div>
+
+              <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full cursor-pointer">
+                <FaYoutube />
+              </div>
+
+              <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full cursor-pointer">
+                <FaInstagram />
+              </div>
+
+            </div>
           </div>
 
         </div>
-
-        <div className="border-t border-background/10 pt-8 flex justify-between text-xs text-background/40">
-          <p>© {new Date().getFullYear()} SAVIOR Lifestyle</p>
-        </div>
-
       </div>
+
+      {/* Bottom Bar */}
+      <div className="bg-black text-white text-center py-5 text-sm">
+        © Savior Lifestyle 2026. All rights reserved
+      </div>
+
     </footer>
   );
 }

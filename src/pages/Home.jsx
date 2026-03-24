@@ -1,4 +1,5 @@
 import CategoriesSection from "../components/CategoriesSection";
+import DenimPants from "../components/DenimPants";
 import FeaturedProducts from "../components/FeaturedProducts";
 import HeroSection from "../components/HeroSection";
 import OldMoneyShirt from "../components/OldMoneyShirt";
@@ -17,6 +18,7 @@ export default function Home() {
        <PromoBanner />
        <OldMoneyShirt/>
        <Panjabi/>
+       <DenimPants/>
     </div>
   )
 }
