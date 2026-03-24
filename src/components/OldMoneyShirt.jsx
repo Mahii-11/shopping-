@@ -4,57 +4,127 @@ const products = [
     name: "White Color - Full Sleeve Designed Fabric",
     price: "BDT 899",
     badge: "Save 251 BDT",
-    image: "/images/product-1.png",
+    image: "/images/shirt-1.jpg",
   },
   {
     id: 2,
     name: "Full Sleeve Pocketless Check Shirt - SCS05",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-2.png",
+    image: "/images/shirt-2.jpg",
   },
   {
     id: 3,
     name: "Full Sleeve Pocketless Check Shirt - SCS02",
     price: "BDT 850",
     badge: null,
-    image: "images/product-3.png",
+    image: "images/shirt-3.jpg",
   },
   {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-4.png",
+    image: "/images/shirt-18.jpg",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-5.png",
+    image: "/images/shirt-5.jpg",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-6.png",
+    image: "/images/shirt-6.jpg",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-7.png",
+    image: "/images/shirt-7.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-8.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-9.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-10.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-11.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-12.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-13.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-14.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-15.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-16.jpg",
+  },
+   {
+    id: 4,
+    name: "Cuban Collar Half Sleeve Shirt - SHS02",
+    price: "BDT 850",
+    badge: null,
+    image: "/images/shirt-17.jpg",
   },
 ];
 
-export default function FeaturedProducts() {
+export default function OldMoneyShirt() {
   return (
     <section className="bg-[#f0f4f4] py-10 px-4">
       <h2 className="text-center text-3xl font-light text-gray-800 mb-8" style={{ fontFamily: "Georgia, serif" }}>
-        On sale
+        Old Money Full Sleeve Shirt
       </h2>
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
         {products.map((product) => (
@@ -98,5 +168,5 @@ export default function FeaturedProducts() {
         </button>
       </div>
     </section>
-  );
+  )
 }

@@ -151,7 +151,7 @@ useEffect(() => {
         <button
           onClick={() => scrollBy("left")}
           disabled={!canScrollLeft}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-200 disabled:opacity-30 md:flex"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow md:flex items-center justify-center hover:bg-gray-200 disabled:opacity-30 hidden"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -160,7 +160,7 @@ useEffect(() => {
         <button
           onClick={() => scrollBy("right")}
           disabled={!canScrollRight}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-200 disabled:opacity-30 md:flex"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white shadow  items-center justify-center hover:bg-gray-200 disabled:opacity-30 md:flex hidden"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

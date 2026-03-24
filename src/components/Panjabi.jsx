@@ -4,57 +4,57 @@ const products = [
     name: "White Color - Full Sleeve Designed Fabric",
     price: "BDT 899",
     badge: "Save 251 BDT",
-    image: "/images/product-1.png",
+    image: "/images/Panjabi-1.png",
   },
   {
     id: 2,
     name: "Full Sleeve Pocketless Check Shirt - SCS05",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-2.png",
+    image: "/images/Panjabi-2.png",
   },
   {
     id: 3,
     name: "Full Sleeve Pocketless Check Shirt - SCS02",
     price: "BDT 850",
     badge: null,
-    image: "images/product-3.png",
+    image: "images/Panjabi-3.png",
   },
   {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-4.png",
+    image: "/images/Panjabi-4.png",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-5.png",
+    image: "/images/Panjabi-5.png",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-6.png",
+    image: "/images/Panjabi-6.png",
   },
    {
     id: 4,
     name: "Cuban Collar Half Sleeve Shirt - SHS02",
     price: "BDT 850",
     badge: null,
-    image: "/images/product-7.png",
+    image: "/images/Panjabi-7.png",
   },
 ];
 
-export default function FeaturedProducts() {
+export default function Panjabi() {
   return (
-    <section className="bg-[#f0f4f4] py-10 px-4">
+     <section className="bg-[#f0f4f4] py-10 px-4">
       <h2 className="text-center text-3xl font-light text-gray-800 mb-8" style={{ fontFamily: "Georgia, serif" }}>
-        On sale
+        Panjabi
       </h2>
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
         {products.map((product) => (
@@ -98,5 +98,5 @@ export default function FeaturedProducts() {
         </button>
       </div>
     </section>
-  );
+  )
 }
