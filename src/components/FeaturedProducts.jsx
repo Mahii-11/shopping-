@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 const products = [
   {
     id: 1,
@@ -82,9 +84,11 @@ export default function FeaturedProducts() {
                 <button className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
                   Add To Cart
                 </button>
+               <Link to="/product-detail" className="w-full">
                 <button className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors">
                   Buy Now
                 </button>
+               </Link>
               </div>
             </div>
           </div>
