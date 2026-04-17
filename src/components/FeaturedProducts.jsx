@@ -1,58 +1,37 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { getFeaturedProduct } from "../services/api";
+import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
 
-const products = [
-  {
-    id: 1,
-    name: "White Color - Full Sleeve Designed Fabric",
-    price: "BDT 899",
-    badge: "Save 251 BDT",
-    image: "/images/product-1.png",
-  },
-  {
-    id: 2,
-    name: "Full Sleeve Pocketless Check Shirt - SCS05",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/product-2.png",
-  },
-  {
-    id: 3,
-    name: "Full Sleeve Pocketless Check Shirt - SCS02",
-    price: "BDT 850",
-    badge: null,
-    image: "images/product-3.png",
-  },
-  {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/product-4.png",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/product-5.png",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/product-6.png",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/product-7.png",
-  },
-];
+
 
 export default function FeaturedProducts() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const res = await getFeaturedProduct();
+        setProducts(res);
+      } catch (error) {
+        console.error("Error fetching Feature product", error);
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProduct();
+  }, [])
+
+
+  if (loading) return (
+    <ProductSectionSkeleton />
+  )
+
+
+
+
   return (
     <section className="bg-[#f0f4f4] py-10 px-4">
       <h2 className="text-center text-3xl font-light text-gray-800 mb-8" style={{ fontFamily: "Georgia, serif" }}>

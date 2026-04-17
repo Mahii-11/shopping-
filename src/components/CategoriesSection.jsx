@@ -1,92 +1,41 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link } from "react-router";
+import CategoriesSkeleton from "../loading/CategoriesSkeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getCategory } from "../services/api";
 
 export default function CategoriesSection() {
-  const categories = [
-    {
-    id: "p-1",
-    name: "Classic Oxford White Shirt",
-    price: 1850,
-    categoryId: "c-shirt",
-    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&h=800&fit=crop",
-    isNew: true,
-    isFeatured: true,
-  },
-  {
-    id: "p-2",
-    name: "Midnight Navy Check Shirt",
-    price: 1450,
-    categoryId: "c-shirt",
-    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=800&fit=crop",
-  },
-  {
-    id: "p-3",
-    name: "Premium Linen Summer Blend",
-    price: 2100,
-    salePrice: 1750,
-    categoryId: "c-shirt",
-    image: "https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=600&h=800&fit=crop",
-    isFeatured: true,
-  },
- 
-  {
-    id: "p-5",
-    name: "Royal Emerald Silk Punjabi",
-    price: 3500,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=600&h=800&fit=crop",
-    isNew: true,
-    isFeatured: true,
-  },
-  {
-    id: "p-6",
-    name: "Classic Ivory Cotton Panjabi",
-    price: 2200,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=800&fit=crop",
-  },
-   {
-    id: "p-5",
-    name: "Royal Emerald Silk Punjabi",
-    price: 3500,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=600&h=800&fit=crop",
-    isNew: true,
-    isFeatured: true,
-  },
-  {
-    id: "p-6",
-    name: "Classic Ivory Cotton Panjabi",
-    price: 2200,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=800&fit=crop",
-  },
-   {
-    id: "p-5",
-    name: "Royal Emerald Silk Punjabi",
-    price: 3500,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=600&h=800&fit=crop",
-    isNew: true,
-    isFeatured: true,
-  },
-  {
-    id: "p-6",
-    name: "Classic Ivory Cotton Panjabi",
-    price: 2200,
-    categoryId: "c-punjabi",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=800&fit=crop",
-  },
-  ];
-
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const sliderRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const autoSlideRef = useRef(null);
   const isHoveringRef = useRef(false);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        setLoading(true);
+        const res = await getCategory();
+        console.log("Category Data:", res);
+        setCategories(res);
+      } catch (error) {
+        console.error("Error fetching Category section", error);
+      } finally {
+        setLoading(false)
+      }
+      
+    }
+    fetchCategory();
+  }, [])
+
+
+
+
+
 
   const CARD_WIDTH = 272;
 
@@ -138,6 +87,8 @@ useEffect(() => {
     return () => el.removeEventListener("scroll", checkScrollBounds);
   }, [checkScrollBounds]);
 
+  if (loading) return <CategoriesSkeleton />
+
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
@@ -173,7 +124,7 @@ useEffect(() => {
           className="flex overflow-x-auto gap-6 px-4 sm:px-6 lg:px-8 pb-8 snap-x scroll-smooth  hide-scrollbar"
         >
           {categories.map((cat, i) => (
-            <Link key={cat.id} href={`/category/${cat.id}`} className="flex-none w-64 snap-start cursor-pointer">
+            <Link key={cat.id} to={`/category/${cat.slug}`} className="flex-none w-64 snap-start cursor-pointer">
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}

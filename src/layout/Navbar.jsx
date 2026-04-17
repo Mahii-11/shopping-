@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { ShoppingBag, Menu, X, Search, User, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
+import { getTotalCartQuantity } from "../cart/cartSlice";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const cartCount = useSelector(getTotalCartQuantity);
 
   // Scroll effect
   useEffect(() => {
@@ -80,12 +83,35 @@ export default function Navbar() {
             </button>
 
             {/* Static Cart */}
-            <Link
-              to="/cart"
-              className="relative text-foreground/80 hover:text-foreground transition-colors group"
-            >
-              <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </Link>
+           <Link
+  to="/cart"
+  className="relative text-foreground/80 hover:text-foreground transition-colors group"
+>
+  <motion.div
+  whileTap={{ scale: 0.9 }}
+  whileHover={{ scale: 1.1 }}
+>
+  <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+</motion.div>
+  
+
+  {/* Badge */}
+  
+  <AnimatePresence mode="wait">
+  {cartCount > 0 && (
+    <motion.span
+      key={cartCount}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      exit={{ scale: 0 }}
+      transition={{ type: "spring", stiffness: 500, damping: 25 }}
+      className="absolute -top-2 -right-2 bg-black text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full px-1"
+    >
+      {cartCount}
+    </motion.span>
+  )}
+</AnimatePresence>
+</Link>
           </div>
         </div>
       </header>

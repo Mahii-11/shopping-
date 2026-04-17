@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
-import { getCategoryWithProducts } from "../services/api";
-import { addItem } from "../cart/cartSlice";
-import { useDispatch } from "react-redux";
+import  { useEffect, useState } from 'react'
+import { getCategoryWithProducts } from '../services/api';
+import ProductSectionSkeleton from '../loading/ProductSectionSkeleton';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../cart/cartSlice';
 
-export default function DenimPants() {
+export default function MenCategory() {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+   const dispatch = useDispatch();
 
   useEffect(() => {
-    const loadTeen = async () => {
+    const loadMen = async () => {
       try {
         setLoading(true);
         const res = await getCategoryWithProducts();
-        const denimPantsCategory = res.find((item) => item.category_slug === "teen");
+        const denimPantsCategory = res.find((item) => item.category_slug === "men");
         if (denimPantsCategory) {
           setCategory(denimPantsCategory);
           setProducts(denimPantsCategory.products.data);
@@ -26,35 +26,33 @@ export default function DenimPants() {
         setLoading(false);
       }
     };
-    loadTeen();
+    loadMen();
   }, []);
 
+
    function handleAddToCart(product) {
-    const newItem = {
-      slug: product.slug || product.id,
-  
-      name: product.name,
-      image: product.image,
-  
-      price: product.price ?? 0,
-  
-      variation_id: product.variation_id || 0,
-      color_id: product.color_id || 0,
-      size_id: product.size_id || 0,
-  
-      quantity: product.quantity || 1,
-  
-      type: product.type || "single",
-    };
-  
-    dispatch(addItem(newItem));
-  }
-  
-
-
+      const newItem = {
+        slug: product.slug || product.id,
+    
+        name: product.name,
+        image: product.image,
+    
+        price: product.price ?? 0,
+    
+        variation_id: product.variation_id || 0,
+        color_id: product.color_id || 0,
+        size_id: product.size_id || 0,
+    
+        quantity: product.quantity || 1,
+    
+        type: product.type || "single",
+      };
+    
+      dispatch(addItem(newItem));
+    }
+    
 
   if (loading) return <ProductSectionSkeleton />;
-
   return (
     <section className="bg-[#f0f4f4] py-10 px-4">
       <h2 className="text-center text-3xl font-light text-gray-800 mb-8" style={{ fontFamily: "Georgia, serif" }}>
@@ -83,9 +81,9 @@ export default function DenimPants() {
                 {product.price}
               </p>
               <div className="mt-auto flex flex-col gap-2">
-                <button
-                onClick={() => handleAddToCart(product)}
-                 className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
+                <button 
+                 onClick={() => handleAddToCart(product)}
+                className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
                   Add To Cart
                 </button>
                 <button className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors">

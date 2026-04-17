@@ -1,130 +1,67 @@
-const products = [
-  {
-    id: 1,
-    name: "White Color - Full Sleeve Designed Fabric",
-    price: "BDT 899",
-    badge: "Save 251 BDT",
-    image: "/images/shirt-1.jpg",
-  },
-  {
-    id: 2,
-    name: "Full Sleeve Pocketless Check Shirt - SCS05",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-2.jpg",
-  },
-  {
-    id: 3,
-    name: "Full Sleeve Pocketless Check Shirt - SCS02",
-    price: "BDT 850",
-    badge: null,
-    image: "images/shirt-3.jpg",
-  },
-  {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-18.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-5.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-6.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-7.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-8.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-9.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-10.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-11.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-12.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-13.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-14.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-15.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-16.jpg",
-  },
-   {
-    id: 4,
-    name: "Cuban Collar Half Sleeve Shirt - SHS02",
-    price: "BDT 850",
-    badge: null,
-    image: "/images/shirt-17.jpg",
-  },
-];
+import { useEffect, useState } from "react"
+import { getCategoryWithProducts } from "../services/api";
+import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
+import { useDispatch } from "react-redux";
+import { addItem } from "../cart/cartSlice";
 
 export default function OldMoneyShirt() {
+  const [category, setCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true)
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    const loadWomen = async () => {
+      try {
+        setLoading(true);
+        const res = await getCategoryWithProducts();
+        const womenCategory = res.find((item) => item.category_slug === "women");
+        if (womenCategory) {
+          setCategory(womenCategory);
+          setProducts(womenCategory.products.data);
+        }
+      } catch (error) {
+        console.error("Error fetching women's products:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadWomen();
+  }, []);
+
+
+  function handleAddToCart(product) {
+  const newItem = {
+    slug: product.slug || product.id,
+
+    name: product.name,
+    image: product.image,
+
+    price: product.price ?? 0,
+
+    variation_id: product.variation_id || 0,
+    color_id: product.color_id || 0,
+    size_id: product.size_id || 0,
+
+    quantity: product.quantity || 1,
+
+    type: product.type || "single",
+  };
+
+  dispatch(addItem(newItem));
+}
+
+
+  if (loading) return <ProductSectionSkeleton />;
+
+
+
+
   return (
     <section className="bg-[#f0f4f4] py-10 px-4">
       <h2 className="text-center text-3xl font-light text-gray-800 mb-8" style={{ fontFamily: "Georgia, serif" }}>
-        Old Money Full Sleeve Shirt
+         {category?.category_name}
       </h2>
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
         {products.map((product) => (
@@ -149,10 +86,14 @@ export default function OldMoneyShirt() {
                 {product.price}
               </p>
               <div className="mt-auto flex flex-col gap-2">
-                <button className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
+                <button 
+                  onClick={() => handleAddToCart(product)}
+                className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
                   Add To Cart
                 </button>
-                <button className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors">
+                <button 
+                
+                className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors">
                   Buy Now
                 </button>
               </div>

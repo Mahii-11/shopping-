@@ -2,17 +2,48 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
+import { useEffect, useState } from "react";
+import { getHeroSectionData } from "../services/api";
+import HeroSkeleton from "../loading/HeroSkeleton";
 
 export default function HeroSection() {
+  const [slider, setSlider] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const fetchSliderData = async () => {
+      try {
+        setLoading(true);
+        const data = await getHeroSectionData();
+        setSlider(data);
+      } catch (error) {
+        console.error("Error fetching slider data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSliderData();
+
+  }, [])
+
+
+
+
+  const title = slider[0]?.title_two?.split(" ");
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
+  
+  if (loading) return <HeroSkeleton />;
+
 
   return (
     <section className="relative h-[90vh] min-h-150 overflow-hidden bg-black flex items-center">
       <motion.div className="absolute inset-0 z-0" style={{ y: heroY, opacity: heroOpacity }}>
         <img
-          src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&h=900&fit=crop&q=80"
+          src={slider[0]?.image}
           alt="Summer Collection"
           className="w-full h-full object-cover object-top opacity-70"
         />
@@ -27,14 +58,16 @@ export default function HeroSection() {
           className="max-w-2xl"
         >
           <span className="font-sans tracking-[0.2em] text-sm uppercase text-white/80 mb-4 block">
-            The New Standard
+            {slider[0]?.title_one}
           </span>
           <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-6">
-            Summer <br />
-            <span className="italic text-primary-foreground/90">Collection</span>
+             {title?.[0]} <br />
+             <span className="italic text-primary-foreground/90">
+             {title?.slice(1).join(" ")}
+             </span>
           </h1>
           <p className="font-sans text-lg text-white/70 mb-10 max-w-md font-light leading-relaxed">
-            Discover our latest arrivals. Elevated essentials crafted from premium fabrics for the modern lifestyle.
+            {slider[0]?.description}
           </p>
           <Link to="/category/c-new">
             <Button className="bg-white text-black hover:bg-primary hover:text-white border-transparent">
