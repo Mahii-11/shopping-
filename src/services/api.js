@@ -1,5 +1,5 @@
 const BASE_URL = "https://shopping.gadgetglobe.com.bd/api/";
-//const URL = "https://backend.gadgetglobe.com.bd/api/";
+
 // 🔹 Normalize data (main magic)
 const normalizeData = (res) => {
   if (Array.isArray(res)) return res;
@@ -57,75 +57,38 @@ export const getCategoryWithProducts = () => fetchData("popular-products");
 // 📦 PRODUCT DETAILS API
 // ===============================
 
-export const getProductDetails = async (slug) => {
-  if (!slug) throw new Error("Product slug is required");
+// Fetch product details by slug
+// Fetch product details by slug
+export const getProductDetailsBySlug = async (slug) => {
+  if (!slug) throw new Error("Slug is required");
 
   try {
     const res = await fetch(`${BASE_URL}product-details/${slug}`);
 
+    // ✅ IMPORTANT: HTTP error handling
     if (!res.ok) {
-      await handleError(res);
+      throw new Error(`HTTP Error! Status: ${res.status}`);
     }
 
-    const json = await res.json();
+    const contentType = res.headers.get("content-type");
 
-    const product = json?.product || {};
+    if (!contentType?.includes("application/json")) {
+      throw new Error("Invalid response type from API");
+    }
 
-    // ✅ SAFE NORMALIZATION (NO MISSING KEYS ANYMORE)
-    return {
-      product: {
-        id: product?.id ?? null,
-        name: product?.name ?? "",
-        slug: product?.slug ?? "",
-        sku: product?.sku ?? "",
+    const data = await res.json();
 
-        description: product?.description ?? "",
-        short_description: product?.short_description ?? "",
+    if (!data?.product) {
+      throw new Error("Product not found or invalid response structure");
+    }
 
-        // 💰 PRICE SAFE MAP (IMPORTANT)
-        price: {
-          regular: product?.price?.regular ?? 0,
-          offer: product?.price?.offer ?? 0,
-          final: product?.price?.final ?? 0,
-          discount: product?.price?.discount ?? 0,
-          currency: product?.price?.currency ?? "BDT",
-        },
-
-        // 🏷 BRAND (FIXED)
-        brand: {
-          id: product?.brand?.id ?? null,
-          name: product?.brand?.name ?? "Unknown Brand",
-        },
-
-        category: product?.category ?? null,
-        sub_category: product?.sub_category ?? null,
-
-        thumbnail: product?.thumbnail ?? "",
-        gallery: product?.gallery ?? [],
-
-        variations: product?.variations ?? [],
-        colors: product?.colors ?? [],
-
-        stock: {
-          quantity: product?.stock?.quantity ?? 0,
-          in_stock: product?.stock?.in_stock ?? false,
-        },
-
-        rating: {
-          total_reviews: product?.rating?.total_reviews ?? 0,
-          average: product?.rating?.average ?? 0,
-        },
-
-        views: product?.views ?? 0,
-      },
-
-      related_products: json?.related_products ?? [],
-    };
+    return data;
   } catch (error) {
-    console.error("Product details fetch error:", error);
+    console.error("getProductDetailsBySlug error:", error.message);
     throw error;
   }
 };
+
 //Post api
 
 export async function createOrder(orderData) {
