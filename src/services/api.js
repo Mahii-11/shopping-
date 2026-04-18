@@ -53,7 +53,79 @@ export const getFeaturedProduct = () => fetchData("featured-product-data");
 export const getCategoryWithProducts = () => fetchData("popular-products");
 
 
+// ===============================
+// 📦 PRODUCT DETAILS API
+// ===============================
 
+export const getProductDetails = async (slug) => {
+  if (!slug) throw new Error("Product slug is required");
+
+  try {
+    const res = await fetch(`${BASE_URL}product-details/${slug}`);
+
+    if (!res.ok) {
+      await handleError(res);
+    }
+
+    const json = await res.json();
+
+    const product = json?.product || {};
+
+    // ✅ SAFE NORMALIZATION (NO MISSING KEYS ANYMORE)
+    return {
+      product: {
+        id: product?.id ?? null,
+        name: product?.name ?? "",
+        slug: product?.slug ?? "",
+        sku: product?.sku ?? "",
+
+        description: product?.description ?? "",
+        short_description: product?.short_description ?? "",
+
+        // 💰 PRICE SAFE MAP (IMPORTANT)
+        price: {
+          regular: product?.price?.regular ?? 0,
+          offer: product?.price?.offer ?? 0,
+          final: product?.price?.final ?? 0,
+          discount: product?.price?.discount ?? 0,
+          currency: product?.price?.currency ?? "BDT",
+        },
+
+        // 🏷 BRAND (FIXED)
+        brand: {
+          id: product?.brand?.id ?? null,
+          name: product?.brand?.name ?? "Unknown Brand",
+        },
+
+        category: product?.category ?? null,
+        sub_category: product?.sub_category ?? null,
+
+        thumbnail: product?.thumbnail ?? "",
+        gallery: product?.gallery ?? [],
+
+        variations: product?.variations ?? [],
+        colors: product?.colors ?? [],
+
+        stock: {
+          quantity: product?.stock?.quantity ?? 0,
+          in_stock: product?.stock?.in_stock ?? false,
+        },
+
+        rating: {
+          total_reviews: product?.rating?.total_reviews ?? 0,
+          average: product?.rating?.average ?? 0,
+        },
+
+        views: product?.views ?? 0,
+      },
+
+      related_products: json?.related_products ?? [],
+    };
+  } catch (error) {
+    console.error("Product details fetch error:", error);
+    throw error;
+  }
+};
 //Post api
 
 export async function createOrder(orderData) {

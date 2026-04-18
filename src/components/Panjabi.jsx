@@ -3,10 +3,15 @@ import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
 import { getCategoryWithProducts } from "../services/api";
 import { addItem } from "../cart/cartSlice";
 import { useDispatch } from "react-redux";
+import VariantModal from "../components/VariantModal";
+import { isVariantValid } from "../utils/cartHelpers";
+
 export default function Panjabi() {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
 
 
@@ -30,29 +35,73 @@ export default function Panjabi() {
   }, []);
 
 
-  
-    function handleAddToCart(product) {
-    const newItem = {
-      slug: product.slug || product.id,
-  
-      name: product.name,
-      image: product.image,
-  
-      price: product.price ?? 0,
-  
-      variation_id: product.variation_id || 0,
-      color_id: product.color_id || 0,
-      size_id: product.size_id || 0,
-  
-      quantity: product.quantity || 1,
-  
-      type: product.type || "single",
-    };
-  
-    dispatch(addItem(newItem));
+     function handleAddToCart(product) {
+    // 🧠 If variant exists → open modal
+    if (isVariantValid(product)) {
+      setSelectedProduct(product);
+      setModalOpen(true);
+      return;
+    }
+
+    // 🧠 Direct add (single product)
+    dispatch(
+      addItem({
+        slug: product.slug || product.id,
+        name: product.name,
+        image: product.image || product.thumbnail,
+
+        price: Number(
+          product.price?.final ||
+            product.price ||
+            0
+        ),
+
+        variation_id: 0,
+        color_id: 0,
+        size_id: 0,
+
+        quantity: 1,
+        type: "single",
+      })
+    );
+  }
+
+  // =========================
+  // CONFIRM VARIANT ADD
+  // =========================
+  function handleConfirmVariant(selected) {
+    dispatch(
+      addItem({
+        slug: selectedProduct.slug,
+        name: selectedProduct.name,
+        image: selectedProduct.image || selectedProduct.thumbnail,
+
+        price: Number(
+          selectedProduct.price?.final ||
+            selectedProduct.price ||
+            0
+        ),
+
+        quantity: 1,
+
+        size_id: selected?.size?.id || 0,
+        color_id: selected?.color?.id || 0,
+        variation_id: selected?.size?.id || selected?.color?.id || 0,
+
+        type: "variable",
+      })
+    );
+
+    setModalOpen(false);
+    setSelectedProduct(null);
   }
 
 
+
+
+
+  
+ 
   if (loading) return <ProductSectionSkeleton />;
 
 
@@ -104,6 +153,16 @@ export default function Panjabi() {
           <span className="relative text-base leading-none">→</span>
         </button>
       </div>
+
+        {/* =========================
+          ULTRA PREMIUM VARIANT MODAL
+      ========================= */}
+      <VariantModal
+        open={modalOpen}
+        product={selectedProduct}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleConfirmVariant}
+      />
     </section>
   )
 }

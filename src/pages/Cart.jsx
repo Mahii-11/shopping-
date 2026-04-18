@@ -1,7 +1,6 @@
 import { Button } from "../components/ui/button";
 import { Minus, Plus, X, ArrowRight, ShoppingBag } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { isVariantValid } from "../utils/cartHelpers";
 import {
   getCart,
   getTotalCartPrice,
@@ -98,11 +97,7 @@ export default function CartPage() {
                       {item.name}
                     </p>
 
-                  {isVariantValid(item) && (
-                   <span className="text-muted-foreground text-sm mt-1">
-                   Variant Selected
-                  </span>
-                  )}
+                
 
                     {/* Mobile Controls */}
                     <div className="sm:hidden mt-4 flex items-center justify-between">

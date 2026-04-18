@@ -1,4 +1,10 @@
-export const isVariantValid = (item) =>
-  item.variation_id > 0 ||
-  item.color_id > 0 ||
-  item.size_id > 0;
+export const isVariantValid = (product) => {
+  return (
+    product?.type === "variable" ||   // 🔥 IMPORTANT FIX
+    (Array.isArray(product?.variations) && product.variations.length > 0) ||
+    (Array.isArray(product?.colors) && product.colors.length > 0)
+  );
+};
+
+
+

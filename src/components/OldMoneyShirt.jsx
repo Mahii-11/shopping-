@@ -31,20 +31,22 @@ export default function OldMoneyShirt() {
   }, []);
 
 
-  function handleAddToCart(product) {
+ function handleAddToCart(product) {
   const newItem = {
     slug: product.slug || product.id,
-
     name: product.name,
-    image: product.image,
+    image: product.image || product.thumbnail,
 
-    price: product.price ?? 0,
+    price: Number(product.price?.final || product.price || 0),
 
-    variation_id: product.variation_id || 0,
-    color_id: product.color_id || 0,
-    size_id: product.size_id || 0,
+    variation_id: Number(product.variation_id || 0),
+    color_id: Number(product.color_id || 0),
+    size_id: Number(product.size_id || 0),
 
-    quantity: product.quantity || 1,
+    color_name: product.color_name || "",
+    size_name: product.size_name || "",
+
+    quantity: Number(product.quantity || 1),
 
     type: product.type || "single",
   };

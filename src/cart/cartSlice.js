@@ -1,17 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 /**
- * 🧠 Unique cart item identifier generator
- * (supports single + variation products)
+ * 🧠 Unique cart key (single + variation safe)
  */
 const getCartKey = (item) =>
-  `${item.product_slug || item.slug}_${
-    item.variation_id || 0
-  }_${item.color_id || 0}_${item.size_id || 0}`;
+  `${item.slug || item.product_slug || item.id}_${
+    item.variation_id ?? 0
+  }_${item.color_id ?? 0}_${item.size_id ?? 0}`;
+
+/**
+ * 💰 Safe price extractor (future proof)
+ */
+const getItemPrice = (item) => {
+  const price =
+    Number(item?.price?.final) ||
+    Number(item?.sale_price) ||
+    Number(item?.price) ||
+    0;
+
+  return isNaN(price) ? 0 : price;
+};
 
 const initialState = {
   cart: [],
   showCartPopup: false,
+
+  // 🆕 for toast (no breaking)
+  lastAddedItem: null,
 };
 
 const cartSlice = createSlice({
@@ -32,21 +47,24 @@ const cartSlice = createSlice({
         state.cart.push({
           ...newItem,
           quantity: newItem.quantity ?? 1,
-          price: Number(newItem.price) || 0,
+          price: getItemPrice(newItem),
         });
       }
+
+      // 🆕 toast tracking (IMPORTANT FIX)
+      state.lastAddedItem = newItem;
 
       state.showCartPopup = true;
     },
 
-    // ❌ REMOVE ITEM (by full key payload)
+    // ❌ REMOVE ITEM
     removeItem(state, action) {
       state.cart = state.cart.filter(
         (item) => getCartKey(item) !== action.payload
       );
     },
 
-    // 🔼 INCREASE QTY
+    // 🔼 INCREASE
     increaseQty(state, action) {
       const item = state.cart.find(
         (item) => getCartKey(item) === action.payload
@@ -57,7 +75,7 @@ const cartSlice = createSlice({
       }
     },
 
-    // 🔽 DECREASE QTY
+    // 🔽 DECREASE
     decreaseQty(state, action) {
       const item = state.cart.find(
         (item) => getCartKey(item) === action.payload
@@ -68,13 +86,14 @@ const cartSlice = createSlice({
       }
     },
 
-    // 🧹 CLEAR CART
+    // 🧹 CLEAR
     clearCart(state) {
       state.cart = [];
       state.showCartPopup = false;
+      state.lastAddedItem = null;
     },
 
-    // 👁 POPUP CONTROL
+    // 👁 HIDE TOAST
     hideCartPopup(state) {
       state.showCartPopup = false;
     },
@@ -93,29 +112,17 @@ export const {
 export default cartSlice.reducer;
 
 /* =========================
-   📊 SELECTORS (PRO STYLE)
+   📊 SELECTORS (NO NAME CHANGE)
 ========================= */
 
-// all cart items
 export const getCart = (state) => state.cart.cart;
 
-// total quantity
 export const getTotalCartQuantity = (state) =>
   state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
 
-// total price (dynamic safe calculation)
-
-const getItemPrice = (item) => {
-  return (
-    Number(item.discount_price) ||
-    Number(item.sale_price) ||
-    Number(item.price) ||
-    0
-  );
-};
-
-
-
+/**
+ * 💰 FIXED TOTAL PRICE (NO BREAK CHANGE)
+ */
 export const getTotalCartPrice = (state) =>
   state.cart.cart.reduce((sum, item) => {
     const price = getItemPrice(item);
@@ -123,8 +130,12 @@ export const getTotalCartPrice = (state) =>
     return sum + price * qty;
   }, 0);
 
-  
-
-
-// helper: generate key for UI actions
+/**
+ * 🧠 KEY EXPORT (UNCHANGED NAME)
+ */
 export const generateCartKey = (item) => getCartKey(item);
+
+/**
+ * 🆕 toast support (optional safe export)
+ */
+export const getLastAddedItem = (state) => state.cart.lastAddedItem;
