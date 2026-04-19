@@ -113,6 +113,8 @@ export default function Panjabi() {
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
         {products.map((product) => (
           <div key={product.id} className="bg-white flex flex-col">
+
+            
             <div className="relative">
               {product.badge && (
                 <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 z-10">

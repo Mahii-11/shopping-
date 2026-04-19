@@ -108,7 +108,7 @@ export default function CartToast() {
               <motion.img
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                src={lastItem.image}
+                src={lastItem.image || lastItem.thumbnail}
                 alt={lastItem.name}
                 className="w-20 h-20 rounded-2xl object-cover border bg-white"
               />

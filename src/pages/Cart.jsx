@@ -86,7 +86,7 @@ export default function CartPage() {
                 <div className="col-span-6 flex gap-6">
                   <div className="w-24 h-32 bg-muted flex-shrink-0 rounded overflow-hidden">
                     <img
-                      src={item.image}
+                      src={item.image || item.thumbnail}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
