@@ -33,21 +33,21 @@ export default function Footer() {
             <ul className="space-y-4 text-gray-700">
               
               <li className="flex items-center gap-3">
-                <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div>
                   <HiOutlineLocationMarker className="text-xl" />
                 </div>
                 <span>Dhaka, Bangladesh</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div>
                   <HiOutlinePhone className="text-xl" />
                 </div>
                 <span>01710088496</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div>
                   <HiOutlineMail className="text-xl" />
                 </div>
                 <span>saviorlifestyle@gmail.com</span>
