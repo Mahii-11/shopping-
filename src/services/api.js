@@ -93,28 +93,38 @@ export const getProductDetailsBySlug = async (slug) => {
 
 export async function createOrder(orderData) {
   try {
-    const response = await fetch(`${URL}store-order`, {
+    console.log("=== FORM DATA DEBUG ===");
+    // Debugging loop to see what exactly is being sent
+    for (let pair of orderData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+
+    const response = await fetch(`${BASE_URL}store-order`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        // 'Content-Type' manually set korbe na, faka rakhbe.
+        // Sudhu 'Accept' header ta thakbe jate server JSON response dey.
+        "Accept": "application/json",
       },
-      body: orderData,
+      body: orderData, // FormData object directly jachche
     });
 
     console.log("STATUS:", response.status);
 
     const text = await response.text();
-    console.log("SERVER RESPONSE:", text);
+    console.log("SERVER RESPONSE RAW:", text);
 
-    if (!text) {
-      return { success: false, msg: "Empty response from server" };
+    // Error handling with parsing check
+    if (!response.ok) {
+        // Jodi status 422 ba 500 hoy, error message ta throw korbe
+        const errorData = text ? JSON.parse(text) : { msg: "Server Error" };
+        return { success: false, ...errorData };
     }
 
-    return JSON.parse(text);
-
+    return text ? JSON.parse(text) : { success: false };
   } catch (error) {
     console.error("Error in createOrder:", error);
-    throw error;
+    // UI te error message show korar jonno object return koro
+    return { success: false, msg: "Network or Server Error" };
   }
 }
-

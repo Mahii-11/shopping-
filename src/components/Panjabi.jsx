@@ -46,7 +46,9 @@ export default function Panjabi() {
     // 🧠 Direct add (single product)
     dispatch(
       addItem({
-        slug: product.slug || product.id,
+        id: product.id,
+        product_id: product.id,
+        slug: product.slug, 
         name: product.name,
         image: product.image || product.thumbnail,
 
@@ -59,6 +61,8 @@ export default function Panjabi() {
         variation_id: 0,
         color_id: 0,
         size_id: 0,
+        color_name: "",
+        size_name: "",
 
         quantity: 1,
         type: "single",
@@ -70,32 +74,39 @@ export default function Panjabi() {
   // CONFIRM VARIANT ADD
   // =========================
   function handleConfirmVariant(selected) {
-    dispatch(
-      addItem({
-        slug: selectedProduct.slug,
-        name: selectedProduct.name,
-        image: selectedProduct.image || selectedProduct.thumbnail,
+  dispatch(
+    addItem({
+      id: selectedProduct.id,
+      product_id: selectedProduct.id, 
 
-        price: Number(
-          selectedProduct.price?.final ||
-            selectedProduct.price ||
-            0
-        ),
+      slug: selectedProduct.slug,
+      name: selectedProduct.name,
+      image: selectedProduct.image || selectedProduct.thumbnail,
 
-        quantity: 1,
+      price: Number(
+        selected?.price ||
+        selectedProduct.price?.final ||
+        selectedProduct.price ||
+        0
+      ),
 
-        size_id: selected?.size?.id || 0,
-        color_id: selected?.color?.id || 0,
-        variation_id: selected?.size?.id || selected?.color?.id || 0,
+      quantity: 1,
 
-        type: "variable",
-      })
-    );
+      size_id: selected?.size?.size_id || 0,
+      color_id: selected?.color?.color_id || 0,
 
-    setModalOpen(false);
-    setSelectedProduct(null);
-  }
+      size_name: selected?.size?.size || "",
+      color_name: selected?.color?.name || "",
 
+      variation_id: selected?.id || 0, // ✅ FIXED
+
+      type: "variable",
+    })
+  );
+
+  setModalOpen(false);
+  setSelectedProduct(null);
+}
 
 
 

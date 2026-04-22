@@ -19,8 +19,6 @@ export default function CartPage() {
   const total = useSelector(getTotalCartPrice);
   const totalQty = useSelector(getTotalCartQuantity);
 
-
-
   // Empty Cart
   if (items.length === 0) {
     return (
@@ -36,9 +34,7 @@ export default function CartPage() {
         </p>
 
         <Link to="/">
-          <Button className="h-12 px-8">
-            Continue Shopping
-          </Button>
+          <Button className="h-12 px-8">Continue Shopping</Button>
         </Link>
       </div>
     );
@@ -46,7 +42,6 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24 font-sans">
-
       {/* Heading */}
       <h1 className="font-serif text-3xl md:text-5xl text-foreground mb-12 border-b border-border pb-6">
         Shopping Cart
@@ -56,10 +51,8 @@ export default function CartPage() {
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-
         {/* Cart Items */}
         <div className="lg:w-2/3">
-
           {/* Desktop header */}
           <div className="hidden sm:grid grid-cols-12 gap-4 pb-4 border-b border-border text-xs uppercase tracking-wider text-muted-foreground font-semibold">
             <div className="col-span-6">Product</div>
@@ -83,7 +76,7 @@ export default function CartPage() {
                 </button>
 
                 {/* Product */}
-                <div className="col-span-6 flex gap-6">
+                <div className="col-span-6 flex gap-4 sm:gap-6">
                   <div className="w-24 h-32 bg-muted flex-shrink-0 rounded overflow-hidden">
                     <img
                       src={item.image || item.thumbnail}
@@ -92,41 +85,58 @@ export default function CartPage() {
                     />
                   </div>
 
-                  <div className="flex flex-col justify-center">
+                  <div className="flex flex-col justify-center flex-1">
                     <p className="font-semibold text-base pr-8 sm:pr-0">
                       {item.name}
                     </p>
 
-                
+                     <div className="text-muted-foreground text-xs sm:text-sm mt-0.5 flex flex-wrap gap-2">
+                       {item.size_name && <span>Size: {item.size_name}</span>}
+                       {item.color_name && <span>Color: {item.color_name}</span>}
+                    </div>
 
                     {/* Mobile Controls */}
-                    <div className="sm:hidden mt-4 flex items-center justify-between">
-                      <span className="font-medium text-foreground">
-                        ৳{item.price}
-                      </span>
-
-                      <div className="flex items-center border border-border h-8">
-                        <button
-                          onClick={() =>
-                            dispatch(decreaseQty(generateCartKey(item)))
-                          }
-                          className="px-2 hover:bg-muted"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-
-                        <span className="w-8 text-center text-xs">
-                          {item.quantity}
+                    <div className="sm:hidden mt-4 space-y-3">
+                      {/* price + qty */}
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-foreground">
+                          ৳{item.price}
                         </span>
 
-                        <button
-                          onClick={() =>
-                            dispatch(increaseQty(generateCartKey(item)))
-                          }
-                          className="px-2 hover:bg-muted"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
+                        <div className="flex items-center border border-border h-8 rounded-md overflow-hidden">
+                          <button
+                            onClick={() =>
+                              dispatch(decreaseQty(generateCartKey(item)))
+                            }
+                            className="px-2 hover:bg-muted"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+
+                          <span className="w-8 text-center text-xs">
+                            {item.quantity}
+                          </span>
+
+                          <button
+                            onClick={() =>
+                              dispatch(increaseQty(generateCartKey(item)))
+                            }
+                            className="px-2 hover:bg-muted"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* MOBILE TOTAL FIX */}
+                      <div className="flex justify-between items-center border-t pt-3">
+                        <span className="text-sm text-muted-foreground">
+                          Total
+                        </span>
+
+                        <span className="font-semibold text-base">
+                          ৳{item.price * item.quantity}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -139,7 +149,7 @@ export default function CartPage() {
 
                 {/* Quantity */}
                 <div className="col-span-2 justify-center hidden sm:flex">
-                  <div className="flex items-center border border-border h-10">
+                  <div className="flex items-center border border-border h-10 rounded-md overflow-hidden">
                     <button
                       onClick={() =>
                         dispatch(decreaseQty(generateCartKey(item)))
@@ -164,7 +174,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Total */}
+                {/* Desktop Total */}
                 <div className="col-span-2 text-right hidden sm:flex justify-end items-center gap-4">
                   <span className="font-semibold">
                     ৳{item.price * item.quantity}
@@ -185,7 +195,6 @@ export default function CartPage() {
         {/* Summary */}
         <div className="lg:w-1/3">
           <div className="bg-card p-8 border border-border sticky top-32 rounded-xl">
-
             <h3 className="font-serif text-2xl mb-6 border-b border-border pb-4">
               Order Summary
             </h3>
@@ -206,29 +215,18 @@ export default function CartPage() {
 
             <div className="border-t border-border pt-6 mb-8 flex justify-between items-center text-lg">
               <span className="font-semibold">Total</span>
-              <span className="font-serif font-bold text-2xl">
-                ৳{total}
-              </span>
+              <span className="font-serif font-bold text-2xl">৳{total}</span>
             </div>
 
-            <Button className="w-full h-14 text-[15px] flex justify-center items-center gap-2">
+
+            <Link to="/checkout">  
+            <Button className="cursor-pointer w-full h-14 text-[15px] flex justify-center items-center gap-2">
               Proceed to Checkout
               <ArrowRight className="w-4 h-4" />
             </Button>
-
-            <div className="mt-6 text-center text-xs text-muted-foreground flex flex-col gap-2">
-              <p>Taxes and shipping calculated at checkout</p>
-
-              <div className="flex justify-center gap-4 mt-2 opacity-50">
-                <span className="font-serif italic font-bold">VISA</span>
-                <span className="font-serif italic font-bold">MASTER</span>
-                <span className="font-serif italic font-bold">AMEX</span>
-              </div>
-            </div>
-
+            </Link>
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -3,11 +3,15 @@ import { getCategoryWithProducts } from "../services/api";
 import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
 import { useDispatch } from "react-redux";
 import { addItem } from "../cart/cartSlice";
+import { isVariantValid } from "../utils/cartHelpers";
+import VariantModal from "./VariantModal";
 
 export default function OldMoneyShirt() {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
 
 
@@ -30,29 +34,79 @@ export default function OldMoneyShirt() {
     loadWomen();
   }, []);
 
+    function handleAddToCart(product) {
+    // 🧠 If variant exists → open modal
+    if (isVariantValid(product)) {
+      setSelectedProduct(product);
+      setModalOpen(true);
+      return;
+    }
 
- function handleAddToCart(product) {
-  const newItem = {
-    slug: product.slug || product.id,
-    name: product.name,
-    image: product.image || product.thumbnail,
+    // 🧠 Direct add (single product)
+    dispatch(
+      addItem({
+        id: product.id,
+        product_id: product.id,
+        slug: product.slug, 
+        name: product.name,
+        image: product.image || product.thumbnail,
 
-    price: Number(product.price?.final || product.price || 0),
+        price: Number(
+          product.price?.final ||
+            product.price ||
+            0
+        ),
 
-    variation_id: Number(product.variation_id || 0),
-    color_id: Number(product.color_id || 0),
-    size_id: Number(product.size_id || 0),
+        variation_id: 0,
+        color_id: 0,
+        size_id: 0,
+        color_name: "",
+        size_name: "",
 
-    color_name: product.color_name || "",
-    size_name: product.size_name || "",
+        quantity: 1,
+        type: "single",
+      })
+    );
+  }
 
-    quantity: Number(product.quantity || 1),
+  // =========================
+  // CONFIRM VARIANT ADD
+  // =========================
+  function handleConfirmVariant(selected) {
+  dispatch(
+    addItem({
+      id: selectedProduct.id,
+      product_id: selectedProduct.id, 
 
-    type: product.type || "single",
-  };
+      slug: selectedProduct.slug,
+      name: selectedProduct.name,
+      image: selectedProduct.image || selectedProduct.thumbnail,
 
-  dispatch(addItem(newItem));
+      price: Number(
+        selected?.price ||
+        selectedProduct.price?.final ||
+        selectedProduct.price ||
+        0
+      ),
+
+      quantity: 1,
+
+      size_id: selected?.size?.size_id || 0,
+      color_id: selected?.color?.color_id || 0,
+
+      size_name: selected?.size?.size || "",
+      color_name: selected?.color?.name || "",
+
+      variation_id: selected?.id || 0, // ✅ FIXED
+
+      type: "variable",
+    })
+  );
+
+  setModalOpen(false);
+  setSelectedProduct(null);
 }
+
 
 
   if (loading) return <ProductSectionSkeleton />;
@@ -110,6 +164,12 @@ export default function OldMoneyShirt() {
           <span className="relative text-base leading-none">→</span>
         </button>
       </div>
+      <VariantModal
+              open={modalOpen}
+              product={selectedProduct}
+              onClose={() => setModalOpen(false)}
+              onConfirm={handleConfirmVariant}
+            />
     </section>
   )
 }

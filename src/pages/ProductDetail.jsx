@@ -92,6 +92,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = (item) => {
   if (!item) return;
+  
 
   if (
     item?.variations?.length > 0 &&
@@ -116,24 +117,24 @@ export default function ProductDetail() {
 
   const cartItem = {
     id: item.id,
+    product_id: item.id,
     slug: item.slug,
     name: item.name,
     thumbnail: item.thumbnail,
 
-    price: price,
-    sale_price: price,
-
-    variation_id: selectedVariation?.id || 0,
-    size_id: selectedVariation?.id || 0,
-
-    size: selectedVariation?.size || selectedVariation?.name || null,
-
-    color_id: selectedColor?.id || 0,
-    color: selectedColor?.name || selectedColor || null,
+    price: Number(price),
+    sale_price: Number(price),
+    variation_id: selectedVariation?.id || "", 
+    size_id: selectedVariation?.size_id || "",
+    size_name: selectedVariation?.size || "",
+    color_id: selectedColor?.color_id || "", 
+    color_name: selectedColor?.name || "",
 
     quantity: 1,
-    stock: item?.stock?.in_stock ?? true,
-  };
+    type: selectedVariation ? "variable" : "single",
+    stock: item?.stock?.quantity ?? 0, 
+    in_stock: item?.stock?.in_stock ?? false,
+};
 
   dispatch(addItem(cartItem));
 };

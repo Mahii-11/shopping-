@@ -3,11 +3,15 @@ import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
 import { getCategoryWithProducts } from "../services/api";
 import { addItem } from "../cart/cartSlice";
 import { useDispatch } from "react-redux";
+import VariantModal from "./VariantModal";
+import { isVariantValid } from "../utils/cartHelpers";
 
 export default function DenimPants() {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,29 +33,78 @@ export default function DenimPants() {
     loadTeen();
   }, []);
 
-  function handleAddToCart(product) {
-  const newItem = {
-    slug: product.slug || product.id,
-    name: product.name,
-    image: product.image || product.thumbnail,
+   
+        function handleAddToCart(product) {
+       // 🧠 If variant exists → open modal
+       if (isVariantValid(product)) {
+         setSelectedProduct(product);
+         setModalOpen(true);
+         return;
+       }
+   
+       // 🧠 Direct add (single product)
+       dispatch(
+         addItem({
+           id: product.id,
+           product_id: product.id,
+           slug: product.slug, 
+           name: product.name,
+           image: product.image || product.thumbnail,
+   
+           price: Number(
+             product.price?.final ||
+               product.price ||
+               0
+           ),
+   
+           variation_id: 0,
+           color_id: 0,
+           size_id: 0,
+           color_name: "",
+           size_name: "",
+   
+           quantity: 1,
+           type: "single",
+         })
+       );
+     }
 
-    price: Number(product.price?.final || product.price || 0),
 
-    variation_id: Number(product.variation_id || 0),
-    color_id: Number(product.color_id || 0),
-    size_id: Number(product.size_id || 0),
+  function handleConfirmVariant(selected) {
+  dispatch(
+    addItem({
+      id: selectedProduct.id,
+      product_id: selectedProduct.id, 
 
-    color_name: product.color_name || "",
-    size_name: product.size_name || "",
+      slug: selectedProduct.slug,
+      name: selectedProduct.name,
+      image: selectedProduct.image || selectedProduct.thumbnail,
 
-    quantity: Number(product.quantity || 1),
+      price: Number(
+        selected?.price ||
+        selectedProduct.price?.final ||
+        selectedProduct.price ||
+        0
+      ),
 
-    type: product.type || "single",
-  };
+      quantity: 1,
 
-  dispatch(addItem(newItem));
+      size_id: selected?.size?.size_id || 0,
+      color_id: selected?.color?.color_id || 0,
+
+      size_name: selected?.size?.size || "",
+      color_name: selected?.color?.name || "",
+
+      variation_id: selected?.id || 0, // ✅ FIXED
+
+      type: "variable",
+    })
+  );
+
+  setModalOpen(false);
+  setSelectedProduct(null);
 }
-  
+   
 
 
 
@@ -105,6 +158,13 @@ export default function DenimPants() {
           <span className="relative text-base leading-none">→</span>
         </button>
       </div>
+
+       <VariantModal
+              open={modalOpen}
+              product={selectedProduct}
+              onClose={() => setModalOpen(false)}
+              onConfirm={handleConfirmVariant}
+            />
     </section>
   )
 }
