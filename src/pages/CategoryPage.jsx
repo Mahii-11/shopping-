@@ -3,6 +3,10 @@ import { useParams, Link } from "react-router";
 import { getCategoryWithProducts } from "../services/api";
 import CategoriesSkeleton from "../loading/CategoriesSkeleton";
 import HeroBanner from "../components/HeroBanner";
+import { useDispatch } from "react-redux";
+import { isVariantValid } from "../utils/cartHelpers";
+import { addItem } from "../cart/cartSlice";
+import VariantModal from "../components/VariantModal";
 
 
 const categoryBanners = {
@@ -16,6 +20,9 @@ export default function CategoryPage() {
   const { slug } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const dispatch = useDispatch();
   const bannerImage = categoryBanners[slug] || "/banners/default.jpg";
 
   useEffect(() => {
@@ -40,6 +47,80 @@ export default function CategoryPage() {
   );
 
   const products = category?.products?.data || [];
+
+
+     function handleAddToCart(product) {
+      // 🧠 If variant exists → open modal
+      if (isVariantValid(product)) {
+        setSelectedProduct(product);
+        setModalOpen(true);
+        return;
+      }
+  
+      // 🧠 Direct add (single product)
+      dispatch(
+        addItem({
+          id: product.id,
+          product_id: product.id,
+          slug: product.slug, 
+          name: product.name,
+          image: product.image || product.thumbnail,
+  
+          price: Number(
+            product.price?.final ||
+              product.price ||
+              0
+          ),
+  
+          variation_id: 0,
+          color_id: 0,
+          size_id: 0,
+          color_name: "",
+          size_name: "",
+  
+          quantity: 1,
+          type: "single",
+        })
+      );
+    }
+  
+    // =========================
+    // CONFIRM VARIANT ADD
+    // =========================
+    function handleConfirmVariant(selected) {
+    dispatch(
+      addItem({
+        id: selectedProduct.id,
+        product_id: selectedProduct.id, 
+  
+        slug: selectedProduct.slug,
+        name: selectedProduct.name,
+        image: selectedProduct.image || selectedProduct.thumbnail,
+  
+        price: Number(
+          selected?.price ||
+          selectedProduct.price?.final ||
+          selectedProduct.price ||
+          0
+        ),
+  
+        quantity: 1,
+  
+        size_id: selected?.size?.size_id || 0,
+        color_id: selected?.color?.color_id || 0,
+  
+        size_name: selected?.size?.size || "",
+        color_name: selected?.color?.name || "",
+  
+        variation_id: selected?.id || 0, // ✅ FIXED
+  
+        type: "variable",
+      })
+    );
+  
+    setModalOpen(false);
+    setSelectedProduct(null);
+  }
 
   if (loading) return <CategoriesSkeleton />
 
@@ -83,7 +164,9 @@ export default function CategoryPage() {
               {/* Buttons */}
               <div className="mt-auto flex flex-col gap-2">
 
-                <button className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
+                <button 
+                onClick={() => handleAddToCart(product)}
+                className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
                   Add To Cart
                 </button>
 
@@ -112,6 +195,12 @@ export default function CategoryPage() {
 
         </button>
       </div>
+        <VariantModal
+              open={modalOpen}
+              product={selectedProduct}
+              onClose={() => setModalOpen(false)}
+              onConfirm={handleConfirmVariant}
+            />
 
     </section>
   );

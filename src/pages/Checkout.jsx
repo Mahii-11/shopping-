@@ -390,7 +390,7 @@ cartItems.forEach((product, index) => {
                           </div>
                         )}
 
-                        <p className="text-red-500 font-semibold text-sm mt-1">
+                        <p className="text-green-700 font-semibold text-sm mt-1">
                           ৳
                           {(
                             product.price *
@@ -447,7 +447,7 @@ cartItems.forEach((product, index) => {
                 disabled={
                   loading
                 }
-                className="w-full h-12 mt-6"
+                className="w-full h-12 mt-6 cursor-pointer"
               >
                 {loading
                   ? "Processing..."

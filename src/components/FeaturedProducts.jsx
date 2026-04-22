@@ -2,12 +2,21 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { getFeaturedProduct } from "../services/api";
 import ProductSectionSkeleton from "../loading/ProductSectionSkeleton";
+import { useDispatch } from "react-redux";
+import { addItem } from "../cart/cartSlice";
+import { isVariantValid } from "../utils/cartHelpers";
+import VariantModal from "./VariantModal";
 
 
 
 export default function FeaturedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const dispatch = useDispatch();
+
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +37,84 @@ export default function FeaturedProducts() {
   if (loading) return (
     <ProductSectionSkeleton />
   )
+
+
+
+    function handleAddToCart(product) {
+      // 🧠 If variant exists → open modal
+      if (isVariantValid(product)) {
+        setSelectedProduct(product);
+        setModalOpen(true);
+        return;
+      }
+  
+      // 🧠 Direct add (single product)
+      dispatch(
+        addItem({
+          id: product.id,
+          product_id: product.id,
+          slug: product.slug, 
+          name: product.name,
+          image: product.image || product.thumbnail,
+  
+          price: Number(
+            product.price?.final ||
+              product.price ||
+              0
+          ),
+  
+          variation_id: 0,
+          color_id: 0,
+          size_id: 0,
+          color_name: "",
+          size_name: "",
+  
+          quantity: 1,
+          type: "single",
+        })
+      );
+    }
+  
+    // =========================
+    // CONFIRM VARIANT ADD
+    // =========================
+    function handleConfirmVariant(selected) {
+    dispatch(
+      addItem({
+        id: selectedProduct.id,
+        product_id: selectedProduct.id, 
+  
+        slug: selectedProduct.slug,
+        name: selectedProduct.name,
+        image: selectedProduct.image || selectedProduct.thumbnail,
+  
+        price: Number(
+          selected?.price ||
+          selectedProduct.price?.final ||
+          selectedProduct.price ||
+          0
+        ),
+  
+        quantity: 1,
+  
+        size_id: selected?.size?.size_id || 0,
+        color_id: selected?.color?.color_id || 0,
+  
+        size_name: selected?.size?.size || "",
+        color_name: selected?.color?.name || "",
+  
+        variation_id: selected?.id || 0, // ✅ FIXED
+  
+        type: "variable",
+      })
+    );
+  
+    setModalOpen(false);
+    setSelectedProduct(null);
+  }
+  
+  
+  
 
 
 
@@ -60,7 +147,9 @@ export default function FeaturedProducts() {
                 {product.price}
               </p>
               <div className="mt-auto flex flex-col gap-2">
-                <button className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
+                <button 
+                 onClick={() => handleAddToCart(product)}
+                className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors">
                   Add To Cart
                 </button>
                <Link to="/product-detail" className="w-full">
@@ -80,6 +169,13 @@ export default function FeaturedProducts() {
           <span className="relative text-base leading-none">→</span>
         </button>
       </div>
+
+        <VariantModal
+              open={modalOpen}
+              product={selectedProduct}
+              onClose={() => setModalOpen(false)}
+              onConfirm={handleConfirmVariant}
+            />
     </section>
   );
 }
