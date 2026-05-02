@@ -1,4 +1,6 @@
+import axios from "axios";
 const BASE_URL = "https://shopping.gadgetglobe.com.bd/api/";
+const TEST_URL = "https://backend.gadgetglobe.com.bd/api/"
 
 // 🔹 Normalize data (main magic)
 const normalizeData = (res) => {
@@ -128,3 +130,203 @@ export async function createOrder(orderData) {
     return { success: false, msg: "Network or Server Error" };
   }
 }
+
+
+
+
+// post api for login  / register
+
+
+
+export const registerApi = async (data) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("name", data.name.trim());
+    formData.append("email", data.email.trim());
+    formData.append("phone", data.phone.trim());
+    formData.append("password", data.password);
+    formData.append(
+      "password_confirmation",
+      data.password_confirmation
+    );
+
+    console.log("REGISTER PAYLOAD:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const res = await axios.post(`${TEST_URL}register-api`, formData);
+
+    return res.data;
+  } catch (error) {
+    console.log("REGISTER ERROR:", error.response?.data);
+    return error.response?.data || {
+      status: false,
+      message: "Server Error",
+    };
+  }
+};
+
+export const loginApi = async (email, password) => {
+  try {
+    const formData = new FormData();
+    formData.append("email", email.trim());
+    formData.append("password", password.trim());
+
+    console.log("LOGIN PAYLOAD:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const response = await fetch(
+      "https://backend.gadgetglobe.com.bd/api/store-login-api",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const text = await response.text();
+    console.log("RAW RESPONSE:", text);
+
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+    throw error;
+  }
+};
+
+export const logoutApi = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${TEST_URL}logout-api`,
+
+  {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+  }
+  );
+
+return await res.json();
+
+};
+
+
+
+// post api for upddating user profile
+
+
+export const getUserProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${TEST_URL}get-profile-details`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    return data;
+
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    return null;
+  }
+};
+
+export const updateUserProfile = async (formData) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${TEST_URL}update-user-profile`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const text = await res.text();
+  console.log("RAW:", text);
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { notification: text };
+  }
+};
+
+
+
+// ✅ services/api.js
+
+export const getUserOrders = async () => {
+  try {
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("userToken");
+
+    const response = await fetch(
+      "https://backend.gadgetglobe.com.bd/api/get-all-orders",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("USER ORDERS RESPONSE:", data);
+
+    if (!response.ok) {
+      throw new Error(data?.message || "Failed to fetch orders");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("getUserOrders Error:", error);
+    throw error;
+  }
+};
+
+
+
+
+export const getSingleOrder = async (id) => {
+  try {
+    const token = localStorage.getItem("token"); 
+
+    const response = await axios.get(
+      `${TEST_URL}order-details/${id}`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching single order:", error.response?.data || error);
+
+    return { success: false };
+  }
+};
+
+
+
+
+
+
+

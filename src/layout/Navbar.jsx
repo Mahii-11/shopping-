@@ -11,6 +11,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const cartCount = useSelector(getTotalCartQuantity);
+  const token = localStorage.getItem("token");
 
   // Scroll effect
   useEffect(() => {
@@ -78,9 +79,9 @@ export default function Navbar() {
               <Search className="w-5 h-5" />
             </button>
 
-            <button className="text-foreground/80 hover:text-foreground hidden sm:block">
-              <User className="w-5 h-5" />
-            </button>
+           <Link to={token  ? "/dashboard" : "/login"}>
+              <User className="w-5 h-5" />     
+           </Link>
 
             {/* Static Cart */}
            <Link

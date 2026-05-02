@@ -6,6 +6,10 @@ import ProductDetail from "./pages/ProductDetail";
 import CategoryPage from "./pages/CategoryPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Dashboard from "./pages/Dashboard";
+import ShopPage from "./pages/ShopPage";
+import AuthPage from "./pages/AuthPage";
+import OrderDetails from "./components/dashboard/OrderDetails";
 
 
 
@@ -19,9 +23,25 @@ const router = createBrowserRouter([
         {path: "/category/:slug", element: < CategoryPage /> },
         { path: "/product/:slug", element: <ProductDetail /> },
         {path: "/cart", element: <Cart /> },
-      { path: "/checkout", element: <Checkout /> },
-    //  { path: "/category/c-pants", element: <Pants /> },
-     // { path: "/category/c-sale", element: <Sale /> },
+        { path: "/checkout", element: <Checkout /> },
+        { path: "/dashboard", element: <Dashboard/> },  
+        { path: "/shoppage", element: <ShopPage /> },
+        {
+        path: "/dashboard",
+        element: <Dashboard/>
+      },
+
+       {
+        path: "/login",
+        element: <AuthPage/>
+      },
+
+       { 
+        path: "/order-details/:id",
+        element: <OrderDetails />
+      },
+
+
     ],
   },
 ]);
