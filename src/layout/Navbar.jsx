@@ -70,6 +70,7 @@ export default function Navbar() {
             <Link to="/category/men" className="hover:text-primary transition-colors">Men</Link>
             <Link to="/category/women" className="hover:text-primary transition-colors">Women</Link>
             <Link to="/category/kids" className="hover:text-primary transition-colors">Kids</Link>
+             <Link to="/shoppage" className="hover:text-primary transition-colors">Shop</Link>
             <Link to="/category/c-sale" className="text-destructive hover:text-destructive/80 transition-colors">SALE</Link>
           </nav>
 
