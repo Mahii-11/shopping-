@@ -67,9 +67,9 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-sans font-medium tracking-wide">
             <Link to="/" className="hover:text-primary transition-colors">NEW</Link>
-            <Link to="/category/c-shirt" className="hover:text-primary transition-colors">SHIRTS</Link>
-            <Link to="/category/c-punjabi" className="hover:text-primary transition-colors">PUNJABI</Link>
-            <Link to="/category/c-pants" className="hover:text-primary transition-colors">PANTS</Link>
+            <Link to="/category/men" className="hover:text-primary transition-colors">Men</Link>
+            <Link to="/category/women" className="hover:text-primary transition-colors">Women</Link>
+            <Link to="/category/kids" className="hover:text-primary transition-colors">Kids</Link>
             <Link to="/category/c-sale" className="text-destructive hover:text-destructive/80 transition-colors">SALE</Link>
           </nav>
 

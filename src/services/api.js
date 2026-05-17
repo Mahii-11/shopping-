@@ -1,6 +1,6 @@
 import axios from "axios";
 const BASE_URL = "https://shopping.gadgetglobe.com.bd/api/";
-const TEST_URL = "https://backend.gadgetglobe.com.bd/api/"
+//const TEST_URL = "https://backend.gadgetglobe.com.bd/api/"
 
 // 🔹 Normalize data (main magic)
 const normalizeData = (res) => {
@@ -156,7 +156,7 @@ export const registerApi = async (data) => {
       console.log(pair[0], pair[1]);
     }
 
-    const res = await axios.post(`${TEST_URL}register-api`, formData);
+    const res = await axios.post(`${BASE_URL}register-api`, formData);
 
     return res.data;
   } catch (error) {
@@ -180,7 +180,7 @@ export const loginApi = async (email, password) => {
     }
 
     const response = await fetch(
-      "https://backend.gadgetglobe.com.bd/api/store-login-api",
+      `${BASE_URL}store-login-api`,
       {
         method: "POST",
         body: formData,
@@ -200,7 +200,7 @@ export const loginApi = async (email, password) => {
 export const logoutApi = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${TEST_URL}logout-api`,
+  const res = await fetch(`${BASE_URL}logout-api`,
 
   {
       method: "POST",
@@ -225,7 +225,7 @@ export const getUserProfile = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`${TEST_URL}get-profile-details`, {
+    const res = await fetch(`${BASE_URL}get-profile-details`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -245,7 +245,7 @@ export const getUserProfile = async () => {
 export const updateUserProfile = async (formData) => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${TEST_URL}update-user-profile`, {
+  const res = await fetch(`${BASE_URL}update-user-profile`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -274,7 +274,7 @@ export const getUserOrders = async () => {
       localStorage.getItem("userToken");
 
     const response = await fetch(
-      "https://backend.gadgetglobe.com.bd/api/get-all-orders",
+      `${BASE_URL}get-all-orders`,
       {
         method: "GET",
         headers: {
@@ -307,7 +307,7 @@ export const getSingleOrder = async (id) => {
     const token = localStorage.getItem("token"); 
 
     const response = await axios.get(
-      `${TEST_URL}order-details/${id}`,
+      `${BASE_URL}order-details/${id}`,
       {
         headers: {
           Accept: "application/json",
