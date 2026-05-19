@@ -330,3 +330,54 @@ export const getSingleOrder = async (id) => {
 
 
 
+
+
+
+
+
+// ===============================
+// 🛍 SHOP PAGE APIs
+// ===============================
+
+// Get all categories
+export const getAllCategories = () =>
+  fetchData("get-all-category", {
+    raw: true,
+  });
+
+// Get all brands
+export const getAllBrands = () =>
+  fetchData("get-all-brand", {
+    raw: true,
+  });
+
+// Get shop products with filters
+export const getShopProducts = async ({
+  categoryIds = [],
+  brandIds = [],
+} = {}) => {
+  const params = new URLSearchParams();
+
+  // category_id[]
+  categoryIds.forEach((id) => {
+    params.append("category_id[]", id);
+  });
+
+  // brand_id[]
+  brandIds.forEach((id) => {
+    params.append("brand_id[]", id);
+  });
+
+  const endpoint = `shoppage?${params.toString()}`;
+
+  return fetchData(endpoint, {
+    raw: true,
+  });
+};
+
+
+
+
+
+
+
