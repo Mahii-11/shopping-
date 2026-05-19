@@ -1,4 +1,4 @@
-import { Check,Heart,Eye, Star, ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { Check,Heart,Eye,  ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   getAllBrands,
@@ -519,7 +519,7 @@ const toggleBrand = (id) => {
             </div>
 
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
             {products.length === 0 ? (
               <div className="col-span-full text-center py-20 text-gray-500">
                 No products found
@@ -528,44 +528,48 @@ const toggleBrand = (id) => {
             products.map((product) => (
               <div
                 key={product.id}
-                className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col"
+                className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-gray-200/90 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-[0_12px_32px_rgba(15,23,42,0.1)]"
               >
-                <div className="relative aspect-[4/5] overflow-hidden bg-gray-50">
+                <div className="relative aspect-square overflow-hidden bg-[#f3f4f6]">
+                  <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/[0.03] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                    className="relative z-0 h-full w-full object-contain object-center p-3 transition-transform duration-500 ease-out group-hover:scale-[1.04] sm:p-4"
                   />
 
-                  <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-4 group-hover:translate-x-0">
-                    <button className="bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-orange-600 hover:scale-110 transition-all duration-200">
-                      <Heart className="w-4 h-4" />
+                  <div className="absolute right-2 top-2 z-10 flex flex-col gap-1.5 opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 sm:right-3 sm:top-3">
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200/90 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md sm:h-9 sm:w-9"
+                    >
+                      <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </button>
 
-                    <button className="bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-orange-600 hover:scale-110 transition-all duration-200">
-                      <Eye className="w-4 h-4" />
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200/90 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-600 hover:shadow-md sm:h-9 sm:w-9"
+                    >
+                      <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="p-4 flex flex-col flex-1">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                <div className="flex flex-1 flex-col gap-1 border-t border-gray-100 p-3 sm:gap-1.5 sm:p-4">
+                  <span className="line-clamp-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
                       {product.category}
                     </span>
 
-                
-                  </div>
-
                   <h4
-                    className="font-semibold text-gray-900 mb-2 truncate"
+                    className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-snug text-gray-800 transition-colors duration-200 group-hover:text-orange-700 sm:min-h-[2.75rem] sm:text-[15px]"
                     title={product.name}
                   >
                     {product.name}
                   </h4>
 
-                  <div className="mt-auto flex items-center space-x-2">
-                    <span className="font-bold text-gray-900">
+                  <div className="mt-auto flex items-baseline gap-1.5 pt-2">
+                    <span className="text-lg font-bold tracking-tight text-gray-900 sm:text-xl">
                       ${Number(product.price || 0).toFixed(2)}
                     </span>
                   </div>
