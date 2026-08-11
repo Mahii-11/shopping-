@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "https://shopping.gadgetglobe.com.bd/api/";
+const BASE_URL = "https://backend.thecaptainshop.com/api/";
 //const TEST_URL = "https://backend.gadgetglobe.com.bd/api/"
 
 // 🔹 Normalize data (main magic)
@@ -7,6 +7,7 @@ const normalizeData = (res) => {
   if (Array.isArray(res)) return res;
   if (Array.isArray(res?.data)) return res.data;
   if (Array.isArray(res?.data?.data)) return res.data.data;
+  if (Array.isArray(res?.menu_data)) return res.menu_data;
 
   return [];
 };
@@ -50,10 +51,18 @@ export const fetchData = async (endpoint, options = {}) => {
 
 
 export const getHeroSectionData = () => fetchData("slider-data");
+export const getFooterPages = () => fetchData("pages");
+export const getSocialData = () => fetchData("social-links");
+export const getContactData = () => fetchData("settings-data", { raw: true });
+export const getPageDetails = (slug) => fetchData(`show-page/${slug}`, { raw: true });
+export const getWebsiteSettings = () => fetchData("logo-data", { raw: true });
 export const getCategory = () => fetchData("shop-by-category-data");
 export const getFeaturedProduct = () => fetchData("featured-product-data");
 export const getCategoryWithProducts = () => fetchData("popular-products");
-
+export const getNavMenu = async () => {
+  const data = await fetchData("top-menu-data", { raw: true });
+  return data?.menu_data || [];
+};
 
 // ===============================
 // 📦 PRODUCT DETAILS API

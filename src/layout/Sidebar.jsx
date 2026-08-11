@@ -66,21 +66,21 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, activeTab, setAct
             Orders
           </div>
           
-          <div onClick={() => setActiveTab('wishlist')} className={navItemClass('wishlist')} data-testid="tab-wishlist">
+        {/* <div onClick={() => setActiveTab('wishlist')} className={navItemClass('wishlist')} data-testid="tab-wishlist">
             <Heart className="w-5 h-5" />
             Wishlist
           </div>
-          
+          */}
           <div onClick={() => setActiveTab('profile')} className={navItemClass('profile')} data-testid="tab-settings">
             <Settings className="w-5 h-5" />
             Account Settings
           </div>
           
-          <div className="pt-6 mt-2 border-t border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">Help</div>
+          {/* <div className="pt-6 mt-2 border-t border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">Help</div>
           <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium transition-colors" data-testid="link-support">
             <LifeBuoy className="w-5 h-5" />
             Support
-          </a>
+          </a> */}
         </nav>
 
         <div className="p-4 border-t border-slate-100">

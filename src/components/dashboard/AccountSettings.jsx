@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Mail, Phone, MapPin, Edit2, Save } from "lucide-react";
 import { updateUserProfile } from "../../services/api";
 
-const baseURL = "https://backend.gadgetglobe.com.bd/";
+
+const baseURL = "https://shopping.gadgetglobe.com.bd/";
 
 export default function AccountSettings({ user, setUser }) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -34,6 +35,21 @@ export default function AccountSettings({ user, setUser }) {
     }
   }, [user]);
 
+  const handlePhoneChange = (e) => {
+  let value = e.target.value;
+
+  // শুধু number allow
+  value = value.replace(/\D/g, "");
+
+  // 11 digit limit
+  value = value.slice(0, 11);
+
+  setFormData((prev) => ({
+    ...prev,
+    phone: value,
+  }));
+};
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -55,6 +71,13 @@ export default function AccountSettings({ user, setUser }) {
 
   const handleSave = async () => {
     setIsSaving(true);
+    const bdPhoneRegex = /^01[3-9]\d{8}$/;
+
+  if (!bdPhoneRegex.test(formData.phone)) {
+    alert("Please enter a valid Bangladeshi phone number");
+    setIsSaving(false);
+    return;
+  }
 
     try {
       const form = new FormData();
@@ -171,6 +194,7 @@ export default function AccountSettings({ user, setUser }) {
                       : baseURL + profileImage
                     : "/default.png"
                 }
+                
                 alt="Profile"
                 className="w-28 h-28 rounded-2xl border-4 border-white shadow-lg object-cover bg-white"
               />
@@ -223,7 +247,12 @@ export default function AccountSettings({ user, setUser }) {
                   type={field.type}
                   name={field.name}
                   value={formData[field.name]}
-                  onChange={handleChange}
+                  onChange={
+                  field.name === "phone"
+                  ? handlePhoneChange
+                  : handleChange
+                  }
+                  maxLength={field.name === "phone" ? 11 : undefined}
                   disabled={!isEditingProfile}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-slate-900 bg-white disabled:bg-slate-50 disabled:text-slate-500 focus:outline-none focus:border-[#5B3DF5] focus:ring-4 focus:ring-[#5B3DF5]/10 transition-all"
                 />
@@ -282,7 +311,7 @@ export default function AccountSettings({ user, setUser }) {
         </div>
       </div>
 
-      {/* Danger Zone */}
+      {/* Danger Zone 
       <div className="bg-red-50 rounded-2xl border border-red-200 p-6 mt-6">
         <h3 className="text-lg font-bold text-red-700 mb-3">Danger Zone</h3>
         <p className="text-sm text-red-600 mb-4">
@@ -293,6 +322,7 @@ export default function AccountSettings({ user, setUser }) {
           Delete Account
         </button>
       </div>
+      */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { getCategoryWithProducts } from "../services/api";
 import CategoriesSkeleton from "../loading/CategoriesSkeleton";
 import HeroBanner from "../components/HeroBanner";
@@ -21,7 +21,10 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const bannerImage = categoryBanners[slug] || "/banners/default.jpg";
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function CategoryPage() {
       try {
         setLoading(true);
         const res = await getCategoryWithProducts();
-        setData(res);
+        setData(res || []);
       } catch (error) {
         console.error("fetching category data", error);
       } finally {
@@ -40,8 +43,22 @@ export default function CategoryPage() {
   }, [slug]);
 
   const category = data.find((item) => item.category_slug === slug);
+  const products = category?.products?.data || category?.products || [];
 
-  const products = category?.products?.data || [];
+  // Helper for safe price parsing
+  const getProductPrice = (product) => {
+    if (typeof product?.price === "object") {
+      return Number(
+        product.price?.final || product.price?.offer || product.price?.regular || 0
+      );
+    }
+    return Number(product?.price || 0);
+  };
+
+  // Helper for safe route path
+  const getProductPath = (product) => {
+    return product?.slug ? `/product/${product.slug}` : `/product/${product.id}`;
+  };
 
   function handleAddToCart(product) {
     // 🧠 If variant exists → open modal
@@ -60,7 +77,7 @@ export default function CategoryPage() {
         name: product.name,
         image: product.image || product.thumbnail,
 
-        price: Number(product.price?.final || product.price || 0),
+        price: getProductPrice(product),
 
         variation_id: 0,
         color_id: 0,
@@ -70,14 +87,28 @@ export default function CategoryPage() {
 
         quantity: 1,
         type: "single",
-      }),
+      })
     );
+  }
+
+  // =========================
+  // BUY NOW HANDLER
+  // =========================
+  function handleBuyNow(product) {
+    if (isVariantValid(product)) {
+      navigate(getProductPath(product));
+    } else {
+      handleAddToCart(product);
+      navigate("/checkout");
+    }
   }
 
   // =========================
   // CONFIRM VARIANT ADD
   // =========================
   function handleConfirmVariant(selected) {
+    if (!selectedProduct) return;
+
     dispatch(
       addItem({
         id: selectedProduct.id,
@@ -88,10 +119,7 @@ export default function CategoryPage() {
         image: selectedProduct.image || selectedProduct.thumbnail,
 
         price: Number(
-          selected?.price ||
-            selectedProduct.price?.final ||
-            selectedProduct.price ||
-            0,
+          selected?.price || getProductPrice(selectedProduct)
         ),
 
         quantity: 1,
@@ -102,10 +130,10 @@ export default function CategoryPage() {
         size_name: selected?.size?.size || "",
         color_name: selected?.color?.name || "",
 
-        variation_id: selected?.id || 0, // ✅ FIXED
+        variation_id: selected?.id || 0,
 
         type: "variable",
-      }),
+      })
     );
 
     setModalOpen(false);
@@ -120,62 +148,61 @@ export default function CategoryPage() {
 
       {/* Grid */}
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 py-6">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white flex flex-col">
-            {/* Image */}
-            <div className="relative">
-              {product.badge && (
-                <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 z-10">
-                  {product.badge}
-                </span>
-              )}
+        {products.map((product) => {
+          const productPath = getProductPath(product);
+          const formattedPrice = getProductPrice(product);
 
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full aspect-square object-cover"
-              />
-            </div>
+          return (
+            <div key={product.id} className="bg-white flex flex-col group">
+              {/* Product Image Link */}
+              <Link to={productPath} className="relative block overflow-hidden">
+                {product.badge && (
+                  <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 z-10 uppercase tracking-wider font-semibold">
+                    {product.badge}
+                  </span>
+                )}
+                <img
+                  src={product.image || product.thumbnail}
+                  alt={product.name}
+                  className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </Link>
 
-            {/* Content */}
-            <div className="p-3 flex flex-col flex-1">
-              <p className="text-xs text-gray-700 leading-snug mb-3 min-h-[2.5rem]">
-                {product.name}
-              </p>
+              {/* Content */}
+              <div className="p-3 flex flex-col flex-1">
+                {/* Product Title Link */}
+                <Link to={productPath} className="hover:underline">
+                  <p className="text-xs text-gray-700 leading-snug mb-3 min-h-[2.5rem] font-medium line-clamp-2">
+                    {product.name}
+                  </p>
+                </Link>
 
-              <p className="text-sm font-medium text-gray-800 mb-3">
-                ৳ {product.price}
-              </p>
+                <p className="text-sm font-semibold text-gray-900 mb-3">
+                  ৳{formattedPrice.toLocaleString()}
+                </p>
 
-              {/* Buttons */}
-              <div className="mt-auto flex flex-col gap-2">
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors"
-                >
-                  Add To Cart
-                </button>
+                {/* Buttons */}
+                <div className="mt-auto flex flex-col gap-2">
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="w-full border border-gray-400 text-gray-800 text-sm py-2 hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+                  >
+                    Add To Cart
+                  </button>
 
-                <Link to={`/product/${product.slug}`} className="w-full">
-                  <button className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors">
+                  <button
+                    onClick={() => handleBuyNow(product)}
+                    className="w-full bg-black text-white text-sm py-2 hover:bg-gray-800 transition-colors font-medium cursor-pointer"
+                  >
                     Buy Now
                   </button>
-                </Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* View More */}
-      <div className="flex justify-center mt-10">
-        <button className="relative inline-flex items-center gap-2 px-10 py-3 border-2 border-gray-800 text-gray-800 text-sm font-medium tracking-widest uppercase overflow-hidden group transition-all duration-300 hover:text-white">
-          <span className="absolute inset-0 bg-gray-900 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
-
-          <span className="relative">View More</span>
-          <span className="relative text-base leading-none">→</span>
-        </button>
-      </div>
       <VariantModal
         open={modalOpen}
         product={selectedProduct}
